@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Details - Burger Hut</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="images/iconlogo.png" alt="Berger Hut Logo">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html#home">Home</a></li>
+        <li><a href="index.html#menu">Menu</a></li>
+        <li><a href="cart.html">Cart</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="product-detail">
+    <div class="product-container">
+      <img id="product-image" src="" alt="Product Image">
+      <div class="product-info">
+        <h1 id="product-name"></h1>
+        <p id="product-description"></p>
+        <h3 id="product-price"></h3>
+        <button onclick="addToCartFromDetail()">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
