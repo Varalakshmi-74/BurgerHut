@@ -1,45 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Your Cart - Burger Hut</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Cart - Berger Hut</title>
+  <link rel="stylesheet" href="style.css">
+  
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <img src="images/iconlogo.png" alt="Berger Hut Logo">
-    </div>
-    <nav>
-      <ul>
-        <li><a href="index.html#home">Home</a></li>
-        <li><a href="index.html#menu">Menu</a></li>
-        <li><a href="cart.html">Cart</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <section class="cart-section">
-    <div class="cart-container">
-      <h1>Your Cart</h1>
-      <div id="cart-items" class="cart-items"></div>
+<header>
+  <div class="logo">
+    <a href="index.html#home"><img src="images/iconlogo.png" alt="Berger Hut Logo" style="height: 60px;"></a>
+  </div>
+  <nav class="navbar">
+    <ul id="nav-links">
+      <li><a href="index.html#home">Home</a></li>
+      <li><a href="index.html#menu">Menu</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+      <li><a href="cart.html">Cart</a></li>
+    </ul>
+    <div class="hamburger" onclick="toggleMenu()"></div>
+  </nav>
+</header>
 
-      <h2>Total: <span id="total-price">₹0</span></h2>
+<div class="cart-container" id="cartContainer">
+  <!-- Cart items will be injected here -->
+</div>
 
-      <div class="payment-form">
-        <h2>Payment Details</h2>
-        <form onsubmit="placeOrder(event)">
-          <input type="text" name="fullname" placeholder="Full Name" required>
-          <input type="text" name="address" placeholder="Address" required>
-          <input type="text" name="card" placeholder="Card Number" maxlength="16" required>
-          <input type="text" name="expiry" placeholder="MM/YY" required>
-          <input type="text" name="cvv" placeholder="CVV" maxlength="3" required>
-          <button type="submit">Place Order</button>
-        </form>
-      </div>
-    </div>
-  </section>
+<script>
+  function toggleMenu() {
+    document.getElementById("nav-links").classList.toggle("show");
+  }
 
-  <script src="script.js"></script>
+  function renderCart() {
+    const container = document.getElementById("cartContainer");
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    if (cart.length === 0) {
+      container.innerHTML = `<p class="empty">🛒 Your cart is empty</p>`;
+      return;
+    }
+
+    let total = 0;
+    let html = "";
+
+    cart.forEach((item, index) => {
+      const subtotal = item.price * item.quantity;
+      total += subtotal;
+      html += `
+        <div class="cart-item">
+          <img src="${item.image}" alt="${item.name}">
+          <div>
+            <h3>${item.name}</h3>
+            <p>Price: ₹${item.price}</p>
+            <p>Subtotal: ₹${subtotal}</p>
+          </div>
+          <div class="cart-controls">
+            <input type="number" min="1" value="${item.quantity}" onchange="updateQty(${index}, this.value)">
+            <br>
+            <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `<div class="cart-total">Total: ₹${total}</div>`;
+    container.innerHTML = html;
+  }
+
+  function updateQty(index, newQty) {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    cart[index].quantity = parseInt(newQty);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  function removeItem(index) {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  renderCart();
+</script>
+
 </body>
 </html>

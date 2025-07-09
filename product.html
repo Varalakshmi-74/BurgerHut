@@ -2,35 +2,126 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Product Details - Burger Hut</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Product - Berger Hut</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <div class="logo">
-      <img src="images/iconlogo.png" alt="Berger Hut Logo">
-    </div>
-    <nav>
-      <ul>
-        <li><a href="index.html#home">Home</a></li>
-        <li><a href="index.html#menu">Menu</a></li>
-        <li><a href="cart.html">Cart</a></li>
-      </ul>
-    </nav>
-  </header>
+  <div class="logo">
+    <a href="index.html#home"><img src="images/iconlogo.png" alt="Berger Hut Logo" style="height: 60px;"></a>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="index.html#home">Home</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#menu">Menu</a></li>
+      <li><a href="index.html#reservations">Reservations</a></li>
+      <li><a href="index.html#testimonial">Testimonials</a></li>
+      <li><a href="index.html#gallery">Gallery</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
 
-  <section class="product-detail">
-    <div class="product-container">
-      <img id="product-image" src="" alt="Product Image">
-      <div class="product-info">
-        <h1 id="product-name"></h1>
-        <p id="product-description"></p>
-        <h3 id="product-price"></h3>
-        <button onclick="addToCartFromDetail()">Add to Cart</button>
-      </div>
-    </div>
-  </section>
 
-  <script src="js/script.js"></script>
+<div class="product-page">
+  <img id="productImage" src="" alt="" class="product-img">
+  <h1 id="productName"></h1>
+  <p class="product-desc" id="productDesc"></p>
+  <p class="product-price">Price: ₹<span id="productPrice"></span></p>
+
+  <div class="quantity-box">
+    <button onclick="decreaseQty()">-</button>
+    <span id="quantity">1</span>
+    <button onclick="increaseQty()">+</button>
+  </div>
+
+  <button class="btn" onclick="addToCart()">Add to Cart</button>
+  <a href="cart.html" class="btn">Go to Cart</a>
+
+</div>
+<!-- Custom Popup -->
+<div id="popup" class="popup">
+  <p id="popup-message"></p>
+</div>
+
+
+<script>
+  const products = {
+    classic: {
+      name: "Classic Cheeseburger",
+      image: "images/burger1.jpg",
+      desc: "A juicy beef patty topped with melted cheese, fresh lettuce, tomato, and our special sauce.",
+      price: 199
+    },
+    veggie: {
+      name: "Veggie Delight",
+      image: "images/burger2.jpg",
+      desc: "A delicious veggie patty made from a blend of fresh vegetables and spices. Topped with avocado, sprouts, and tangy mayo. Served with sweet potato fries.",
+      price: 179
+    },
+    bbq: {
+      name: "Spicy BBQ Burger",
+      image: "images/burger3.jpg",
+      desc: "A fiery burger packed with flavor! Grilled chicken breast smothered in spicy BBQ sauce, topped with jalapenos, onion rings, and chipotle mayo. Served with coleslaw.",
+      price: 219
+    }
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('id');
+
+  const product = products[productId];
+
+  if (product) {
+    document.getElementById('productImage').src = product.image;
+    document.getElementById('productName').textContent = product.name;
+    document.getElementById('productDesc').textContent = product.desc;
+    document.getElementById('productPrice').textContent = product.price;
+  } else {
+    document.querySelector('.product-page').innerHTML = "<h2>Product not found</h2>";
+  }
+
+  let quantity = 1;
+
+  function increaseQty() {
+    quantity++;
+    document.getElementById("quantity").textContent = quantity;
+  }
+
+  function decreaseQty() {
+    if (quantity > 1) {
+      quantity--;
+      document.getElementById("quantity").textContent = quantity;
+    }
+  }
+
+  function addToCart() {
+    const name = document.getElementById("productName").textContent;
+    const price = parseInt(document.getElementById("productPrice").textContent);
+    const image = document.getElementById("productImage").src;
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // Check if item already exists
+    let existingItem = cart.find(item => item.name === name);
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      cart.push({ name, price, quantity, image });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // Popup message
+    const popup = document.getElementById("popup");
+    const msg = document.getElementById("popup-message");
+    msg.textContent = `✔️ ${name} x${quantity} added to cart!`;
+    popup.style.display = "block";
+    popup.style.animation = "none";
+    void popup.offsetWidth;
+    popup.style.animation = "fadeInOut 3s ease-in-out forwards";
+  }
+</script>
 </body>
 </html>
